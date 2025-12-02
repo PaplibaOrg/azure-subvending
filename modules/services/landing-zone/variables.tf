@@ -52,10 +52,10 @@ variable "tags" {
 }
 
 variable "workload" {
-  description = "The workload type of the subscription. Must be either 'production' or 'devtest'"
+  description = "The workload type of the subscription. Must be either 'Production' or 'DevTest'"
   type        = string
   validation {
-    condition     = contains(["production", "devtest"], var.workload)
-    error_message = "Workload must be either 'production' or 'devtest'."
+    condition     = contains(["Production", "DevTest"], var.workload)
+    error_message = "Workload must be either 'Production' or 'DevTest'."
   }
 }
