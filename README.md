@@ -177,7 +177,7 @@ Creates a single Azure Subscription and associates it with a management group.
 - `management_group_id` - Management group ID for placement
 - `tags` - Tags to apply
 
-### Service Module (`modules/services/subscriptions/`)
+### Service Module (`modules/services/landing-zone/`)
 
 Orchestrates subscription creation with standardized naming and tagging.
 
@@ -185,10 +185,12 @@ Orchestrates subscription creation with standardized naming and tagging.
 - `application` - Application name/key
 - `environment` - Environment name (dev, test, prod)
 - `sequence` - Sequence number for naming
-- `location` - Azure region
-- `billing_scope_id` - Billing scope ID
-- `management_group_id` - Management group ID (derived automatically from environment and application)
-- `tags` - Tags object (owner, application, and any additional keys)
+- `billing_account_name` - The name of the billing account
+- `billing_profile_name` - The name of the billing profile
+- `invoice_section_name` - The name of the invoice section
+- `management_group_id` - Management group ID where the subscription should be placed
+- `workload` - The workload type (Production or DevTest)
+- `tags` - Tags map to apply to the subscription
 
 **Outputs:**
 - Subscription ID, name, and alias
