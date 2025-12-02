@@ -1,10 +1,16 @@
 locals {
-  json_files = fileset("${path.module}", "**/*.json")
+  json_object_map = {
+    for file in fileset("${path.module}", "**/*.json") :
+    "${file}" => jsondecode(file(file))
+  }
 }
 
 # module "subscription" {
 #   source = "../../modules/services/subscriptions"
-#   for_each = local.json_object_map
+# }
+
+# module "subscription" {
+#   source = "../../modules/services/subscriptions" for_each = local.json_object_map
 #   application         = each.value.application
 #   environment         = each.value.environment
 #   sequence            = each.value.sequence
@@ -14,6 +20,10 @@ locals {
 #   tags                = each.value.tags
 # }
 
+# output "output_name" {
+#   value = local.json_f
+# }
+
 output "output_name" {
-  value = local.json_files
+  value = local.json_object_map
 }

@@ -4,6 +4,7 @@
   "sequence": "001",
   "location": "eastus",
   "billing_scope_id": "/providers/Microsoft.Billing/billingAccounts/{billingAccountName}/billingProfiles/{billingProfileName}/invoiceSections/{invoiceSectionName}",
+  "management_group": "/providers/Microsoft.Management/managementGroups/dev-plb-corp",
   "tags": {
     "owner": "sunny.bharne",
     "application": "dragops",
