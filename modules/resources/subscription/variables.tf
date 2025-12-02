@@ -3,8 +3,18 @@ variable "subscription_name" {
   type        = string
 }
 
-variable "billing_scope_id" {
-  description = "The billing scope ID (e.g., /providers/Microsoft.Billing/billingAccounts/{billingAccountName}/billingProfiles/{billingProfileName}/invoiceSections/{invoiceSectionName})"
+variable "billing_account_name" {
+  description = "The name of the billing account (e.g., e879cf0f-2b4d-5431-109a-f72fc9868693:024cabf4-7321-4cf9-be59-df0c77ca51de_2019-05-31)"
+  type        = string
+}
+
+variable "billing_profile_name" {
+  description = "The name of the billing profile (e.g., PE2Q-NOIT-BG7-TGB)"
+  type        = string
+}
+
+variable "invoice_section_name" {
+  description = "The name of the invoice section (e.g., MTT4-OBS7-PJA-TGB)"
   type        = string
 }
 
@@ -16,7 +26,13 @@ variable "management_group_id" {
 variable "tags" {
   description = "Tags to apply to the subscription"
   type        = map(string)
-  default     = {}
 }
 
-
+variable "workload" {
+  description = "The workload type of the subscription. Must be either 'production' or 'devtest'"
+  type        = string
+  validation {
+    condition     = contains(["production", "devtest"], var.workload)
+    error_message = "Workload must be either 'production' or 'devtest'."
+  }
+}
