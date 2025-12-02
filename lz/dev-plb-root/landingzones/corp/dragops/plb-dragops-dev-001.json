@@ -1,0 +1,13 @@
+{
+  "application": "dragops",
+  "environment": "dev",
+  "sequence": "001",
+  "location": "eastus",
+  "billing_scope_id": "/providers/Microsoft.Billing/billingAccounts/{billingAccountName}/billingProfiles/{billingProfileName}/invoiceSections/{invoiceSectionName}",
+  "tags": {
+    "owner": "sunny.bharne",
+    "application": "dragops",
+    "costCenter": "dragops",
+    "project": "DragOps"
+  }
+}

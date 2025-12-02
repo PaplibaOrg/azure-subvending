@@ -34,13 +34,9 @@ variable "tags" {
   type = object({
     owner       = string
     application = string
+    costCenter  = optional(string)
+    project     = optional(string)
   })
-}
-
-variable "additional_tags" {
-  description = "Additional tags to apply"
-  type        = map(string)
-  default     = {}
 }
 
 

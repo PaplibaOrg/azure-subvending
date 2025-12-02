@@ -5,24 +5,20 @@ parameters:
     type: string
   - name: workingDirectory
     type: string
-  - name: resourceType
-    type: string
-  - name: resourceDisplayName
-    type: string
   - name: runPlanInApply
     type: boolean
     default: false
 
 stages:
   # Plan Stage
-  - stage: Plan_${{ parameters.resourceType }}_${{ parameters.environment }}
-    displayName: 'Plan: ${{ parameters.resourceDisplayName }} (${{ parameters.environment }})'
+  - stage: Plan_${{ parameters.environment }}
+    displayName: 'Plan: Subscriptions (${{ parameters.environment }})'
     jobs:
       - job: TfPlan
-        displayName: 'Plan: ${{ parameters.resourceDisplayName }} ${{ parameters.environment }}'
+        displayName: 'Plan: Subscriptions ${{ parameters.environment }}'
         steps:
           - task: AzureCLI@2
-            displayName: "Plan: Terraform ${{ parameters.resourceDisplayName }}"
+            displayName: "Plan: Terraform Subscriptions"
             inputs:
               azureSubscription: ${{ parameters.serviceConnection }}
               scriptType: 'bash'
@@ -54,19 +50,19 @@ stages:
                 terraform plan
 
   # Apply Stage
-  - stage: Apply_${{ parameters.resourceType }}_${{ parameters.environment }}
-    displayName: 'Apply: ${{ parameters.resourceDisplayName }} (${{ parameters.environment }})'
-    dependsOn: Plan_${{ parameters.resourceType }}_${{ parameters.environment }}
+  - stage: Apply_${{ parameters.environment }}
+    displayName: 'Apply: Subscriptions (${{ parameters.environment }})'
+    dependsOn: Plan_${{ parameters.environment }}
     jobs:
       - deployment: TfApply
-        displayName: 'Apply: ${{ parameters.resourceDisplayName }} ${{ parameters.environment }}'
+        displayName: 'Apply: Subscriptions ${{ parameters.environment }}'
         environment: ${{ parameters.environment }}
         strategy:
           runOnce:
             deploy:
               steps:
                 - task: AzureCLI@2
-                  displayName: "Apply: Terraform ${{ parameters.resourceDisplayName }}"
+                  displayName: "Apply: Terraform Subscriptions"
                   inputs:
                     azureSubscription: ${{ parameters.serviceConnection }}
                     scriptType: 'bash'

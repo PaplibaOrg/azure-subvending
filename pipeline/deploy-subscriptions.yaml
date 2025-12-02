@@ -4,7 +4,7 @@ trigger:
       - main
   paths:
     include:
-      - sub/**
+      - lz/**
       - modules/**
       - pipeline/**
 
@@ -21,9 +21,7 @@ stages:
     parameters:
       serviceConnection: $(serviceConnectionDev)
       environment: 'Dev'
-      workingDirectory: 'sub'
-      resourceType: 'Sub'
-      resourceDisplayName: 'Subscriptions'
+      workingDirectory: 'lz/dev-plb-root'
       runPlanInApply: false
 
   # # Test Environment - Plan, Approval, Apply
@@ -31,9 +29,7 @@ stages:
   #   parameters:
   #     serviceConnection: $(serviceConnectionTest)
   #     environment: 'Test'
-  #     workingDirectory: 'sub'
-  #     resourceType: 'Sub'
-  #     resourceDisplayName: 'Subscriptions'
+  #     workingDirectory: 'lz/test-plb-root'
   #     runPlanInApply: false
 
   # # Prod Environment - Plan, Approval, Apply
@@ -41,9 +37,7 @@ stages:
   #   parameters:
   #     serviceConnection: $(serviceConnectionProd)
   #     environment: 'Prod'
-  #     workingDirectory: 'sub'
-  #     resourceType: 'Sub'
-  #     resourceDisplayName: 'Subscriptions'
+  #     workingDirectory: 'lz/plb-root'
   #     runPlanInApply: false
 
 

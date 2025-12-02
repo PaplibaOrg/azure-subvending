@@ -17,11 +17,14 @@ azure-subvending/
 │   │   └── subscription/            # Single subscription resource module
 │   └── services/
 │       └── subscriptions/            # Subscription orchestration module
-├── sub/                             # Subscription deployment files
+├── lz/                              # Landing zone deployment files
 │   ├── main.tf                      # Main deployment file
 │   ├── provider.tf                  # Terraform backend and provider config
-│   └── <mg-name>/                   # Management group folders
-│       └── sub-vending.json         # Subscription configuration
+│   └── dev-plb-root/
+│       └── landingzones/
+│           └── corp/                # Corporate landing zones
+│               └── <application>/   # Application folders (e.g., platform)
+│                   └── <subscription-name>.json # Subscription configuration (e.g., plb-platform-dev-001.json)
 ├── pipeline/
 │   ├── deploy-subscriptions.yaml
 │   └── templates/
@@ -69,7 +72,7 @@ npm install
 
 1. **Create Subscription Configuration Files**
 
-   Create JSON files in `sub/<management-group-name>/` directory:
+   Create JSON files in `lz/dev-plb-root/landingzones/corp/<application>/` directory, named as `<subscription-name>.json`:
 
    ```json
    {
@@ -92,7 +95,7 @@ npm install
 
 2. **Update Terraform Backend**
 
-   Edit `sub/provider.tf` to configure your Terraform state backend:
+   Edit `lz/provider.tf` to configure your Terraform state backend:
 
    ```hcl
    terraform {
@@ -150,7 +153,7 @@ Prod: Plan_Sub_Prod → Approval_Prod → Apply_Sub_Prod (when configured)
 ### Manual Deployment (Local)
 
 ```bash
-cd sub
+cd lz
 
 # Initialize Terraform
 terraform init
@@ -184,9 +187,8 @@ Orchestrates subscription creation with standardized naming and tagging.
 - `sequence` - Sequence number for naming
 - `location` - Azure region
 - `billing_scope_id` - Billing scope ID
-- `management_group_id` - Management group ID
-- `tags` - Base tags object (owner, application)
-- `additional_tags` - Additional tags
+- `management_group_id` - Management group ID (derived automatically from environment and application)
+- `tags` - Tags object (owner, application, and any additional keys)
 
 **Outputs:**
 - Subscription ID, name, and alias
@@ -203,7 +205,7 @@ Subscriptions follow the pattern: `sub-{application}-{region}-{environment}-{seq
 
 ### JSON Configuration Format
 
-Each `sub-vending.json` file contains subscription-specific configuration:
+Each subscription JSON file (named as `<subscription-name>.json`, e.g., `plb-platform-dev-001.json`) contains subscription-specific configuration:
 
 ```json
 {
@@ -212,12 +214,9 @@ Each `sub-vending.json` file contains subscription-specific configuration:
   "sequence": "001",
   "location": "eastus",
   "billing_scope_id": "/providers/Microsoft.Billing/...",
-  "management_group_id": "/providers/Microsoft.Management/managementGroups/dev-plb-platform",
   "tags": {
     "owner": "sunny.bharne",
-    "application": "vending"
-  },
-  "additional_tags": {
+    "application": "vending",
     "costCenter": "platform"
   }
 }
@@ -253,7 +252,7 @@ git commit -m "fix"
 
 3. Test locally:
    ```bash
-   cd sub
+   cd lz
    terraform init
    terraform plan
    ```

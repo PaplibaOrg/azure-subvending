@@ -16,11 +16,9 @@ locals {
   tags_map = merge(
     {
       environment = var.environment
-      owner       = var.tags.owner
-      application = var.tags.application
       managedBy   = "terraform"
     },
-    var.additional_tags
+    var.tags
   )
 }
 

@@ -4,14 +4,11 @@
   "sequence": "001",
   "location": "eastus",
   "billing_scope_id": "/providers/Microsoft.Billing/billingAccounts/{billingAccountName}/billingProfiles/{billingProfileName}/invoiceSections/{invoiceSectionName}",
-  "management_group_id": "/providers/Microsoft.Management/managementGroups/dev-plb-platform",
   "tags": {
     "owner": "sunny.bharne",
-    "application": "vending"
-  },
-  "additional_tags": {
+    "application": "vending",
     "costCenter": "platform",
-    "project": "subscription-vending"
+    "project": "CLZ"
   }
 }
 
