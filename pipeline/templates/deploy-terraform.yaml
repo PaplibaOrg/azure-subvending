@@ -100,3 +100,5 @@ stages:
                       fi
                       
                       terraform apply -auto-approve
+
+

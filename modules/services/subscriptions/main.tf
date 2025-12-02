@@ -32,3 +32,5 @@ module "subscription" {
   management_group_id = var.management_group_id
   tags                = local.tags_map
 }
+
+

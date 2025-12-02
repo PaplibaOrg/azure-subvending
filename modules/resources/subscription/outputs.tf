@@ -12,3 +12,5 @@ output "subscription_alias" {
   description = "The alias of the subscription"
   value       = azurerm_subscription.this.alias
 }
+
+

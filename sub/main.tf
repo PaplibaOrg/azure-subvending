@@ -20,3 +20,5 @@ module "subscription" {
   tags                = each.value.tags
   additional_tags     = lookup(each.value, "additional_tags", {})
 }
+
+
