@@ -2,10 +2,13 @@ locals {
   # Recursively find all JSON files at any depth using ** pattern
   json_files = fileset("${path.module}", "**/*.json")
 
-  # Decode JSON once per file
+  # Decode JSON once per file and filter out files that don't have required fields
   raw_json_files = {
     for file in local.json_files :
     file => jsondecode(file("${path.module}/${file}"))
+    if can(jsondecode(file("${path.module}/${file}")).application) &&
+    can(jsondecode(file("${path.module}/${file}")).environment) &&
+    can(jsondecode(file("${path.module}/${file}")).sequence)
   }
 
   # Final map used for for_each
