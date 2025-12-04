@@ -25,9 +25,9 @@ module "subscription" {
   application          = each.value.application
   environment          = each.value.environment
   sequence             = each.value.sequence
-  billing_account_name = each.value.billing_account_name
-  billing_profile_name = each.value.billing_profile_name
-  invoice_section_name = each.value.invoice_section_name
+  billing_account_name = var.billing_account_name
+  billing_profile_name = var.billing_profile_name
+  invoice_section_name = var.invoice_section_name
   management_group_id  = each.value.management_group
   workload             = each.value.workload
   tags                 = each.value.tags

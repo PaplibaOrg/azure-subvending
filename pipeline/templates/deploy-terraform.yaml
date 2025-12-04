@@ -19,6 +19,10 @@ stages:
         steps:
           - task: AzureCLI@2
             displayName: "Plan: Terraform Subscriptions"
+            env:
+              TF_VAR_billing_account_name: $(BILLING_ACCOUNT)
+              TF_VAR_billing_profile_name: $(BILLING_PROFILE)
+              TF_VAR_invoice_section_name: $(BILLING_SECTION)
             inputs:
               azureSubscription: ${{ parameters.serviceConnection }}
               scriptType: 'bash'
@@ -63,6 +67,10 @@ stages:
               steps:
                 - task: AzureCLI@2
                   displayName: "Apply: Terraform Subscriptions"
+                  env:
+                    TF_VAR_billing_account_name: $(BILLING_ACCOUNT)
+                    TF_VAR_billing_profile_name: $(BILLING_PROFILE)
+                    TF_VAR_invoice_section_name: $(BILLING_SECTION)
                   inputs:
                     azureSubscription: ${{ parameters.serviceConnection }}
                     scriptType: 'bash'
