@@ -37,18 +37,18 @@ azure-subvending/
 
 ## CAF Subscription Vending Principles
 
-This repository implements subscription vending following CAF best practices:
+This repository implements subscription alias management following CAF best practices:
 
-1. **Subscription Democratization**: Enable application teams to request subscriptions through a standardized process
-2. **Management Group Placement**: Automatically place subscriptions in appropriate management groups
-3. **Naming Convention**: Follow consistent naming pattern: `sub-{app}-{region}-{env}-{seq}`
+1. **Subscription Management**: Manage existing subscriptions through standardized aliases
+2. **Management Group Placement**: Automatically associate subscriptions with appropriate management groups
+3. **Naming Convention**: Follow consistent naming pattern: `{prefix}-{application}-{environment}-{sequence}`
 4. **Tagging Strategy**: Apply consistent tags for governance and cost management
-5. **Billing Scope**: Associate subscriptions with appropriate billing scopes
+5. **Alias Management**: Create and manage subscription aliases for easier identification and management
 
 ## Prerequisites
 
-- Azure subscription with Subscription Contributor role
-- Billing account access (for subscription creation)
+- Azure subscription with permissions to manage subscription aliases
+- Existing Azure subscriptions (this module creates aliases for existing subscriptions)
 - Terraform >= 1.0
 - Azure CLI installed and configured
 - Azure DevOps with self-hosted agent pool (`default`)
@@ -76,19 +76,17 @@ npm install
 
    ```json
    {
+     "subscription_id": "12345678-1234-1234-1234-123456789012",
      "application": "platform",
      "environment": "dev",
      "sequence": "001",
-     "location": "eastus",
-     "billing_scope_id": "/providers/Microsoft.Billing/billingAccounts/{billingAccountName}/billingProfiles/{billingProfileName}/invoiceSections/{invoiceSectionName}",
-     "management_group_id": "/providers/Microsoft.Management/managementGroups/dev-plb-platform",
+     "management_group": "/providers/Microsoft.Management/managementGroups/dev-plb-platform",
+     "workload": "DevTest",
      "tags": {
        "owner": "sunny.bharne",
-       "application": "vending"
-     },
-     "additional_tags": {
+       "application": "vending",
        "costCenter": "platform",
-       "project": "subscription-vending"
+       "project": "CLZ"
      }
    }
    ```
@@ -130,11 +128,11 @@ Prod: Plan_Sub_Prod → Approval_Prod → Apply_Sub_Prod (when configured)
 
 2. **Assign Permissions** to the managed identity:
    ```bash
-   # Subscription Contributor at billing account level
+   # Subscription Contributor or Owner role on the subscriptions to manage
    az role assignment create \
      --assignee <managed-identity-principal-id> \
      --role "Subscription Contributor" \
-     --scope /providers/Microsoft.Billing/billingAccounts/{billingAccountName}
+     --scope /subscriptions/{subscription-id}
    ```
 
 3. **Create Azure DevOps Environments**:
@@ -169,25 +167,26 @@ terraform apply
 
 ### Resource Module (`modules/resources/subscription/`)
 
-Creates a single Azure Subscription and associates it with a management group.
+Creates an alias for an existing Azure Subscription and associates it with a management group.
 
 **Variables:**
 - `subscription_name` - Display name of the subscription
-- `billing_scope_id` - Billing scope ID
+- `subscription_id` - ID of the existing subscription
+- `alias` - Alias name for the subscription
 - `management_group_id` - Management group ID for placement
+- `workload` - Workload type (Production or DevTest)
 - `tags` - Tags to apply
 
 ### Service Module (`modules/services/landing-zone/`)
 
-Orchestrates subscription creation with standardized naming and tagging.
+Orchestrates subscription alias creation with standardized naming and tagging.
 
 **Variables:**
-- `application` - Application name/key
+- `prefix` - Prefix for subscription naming (e.g., 'plb')
+- `application` - Application name/key (must be lowercase)
 - `environment` - Environment name (dev, test, prod)
-- `sequence` - Sequence number for naming
-- `billing_account_name` - The name of the billing account
-- `billing_profile_name` - The name of the billing profile
-- `invoice_section_name` - The name of the invoice section
+- `sequence` - Sequence number for naming (must be 3 characters)
+- `subscription_id` - ID of the existing subscription to create an alias for
 - `management_group_id` - Management group ID where the subscription should be placed
 - `workload` - The workload type (Production or DevTest)
 - `tags` - Tags map to apply to the subscription
@@ -197,11 +196,11 @@ Orchestrates subscription creation with standardized naming and tagging.
 
 ## Subscription Naming Convention
 
-Subscriptions follow the pattern: `sub-{application}-{region}-{environment}-{sequence}`
+Subscriptions follow the pattern: `{prefix}-{application}-{environment}-{sequence}`
 
 **Examples:**
-- `sub-platform-eus-dev-001` - Platform application, East US, Dev environment
-- `sub-app1-wus-prod-001` - App1 application, West US, Prod environment
+- `plb-platform-dev-001` - Platform application, Dev environment
+- `plb-app1-prod-001` - App1 application, Prod environment
 
 ## Configuration Files
 
@@ -211,15 +210,17 @@ Each subscription JSON file (named as `<subscription-name>.json`, e.g., `plb-pla
 
 ```json
 {
+  "subscription_id": "12345678-1234-1234-1234-123456789012",
   "application": "platform",
   "environment": "dev",
   "sequence": "001",
-  "location": "eastus",
-  "billing_scope_id": "/providers/Microsoft.Billing/...",
+  "management_group": "/providers/Microsoft.Management/managementGroups/dev-plb-platform",
+  "workload": "DevTest",
   "tags": {
     "owner": "sunny.bharne",
     "application": "vending",
-    "costCenter": "platform"
+    "costCenter": "platform",
+    "project": "CLZ"
   }
 }
 ```
@@ -269,15 +270,15 @@ git commit -m "fix"
 - ✅ Service connections secured in Azure DevOps
 - ✅ Least privilege role assignments
 - ✅ State files stored in secure Azure Storage backend
-- ✅ Billing scope restrictions prevent unauthorized subscription creation
+- ✅ Subscription IDs stored in configuration files (can be updated with real IDs)
 
 ## Troubleshooting
 
-**Issue:** "Insufficient permissions to create subscription"
-- **Solution:** Verify managed identity has "Subscription Contributor" role at billing account level
+**Issue:** "Insufficient permissions to manage subscription"
+- **Solution:** Verify managed identity has "Subscription Contributor" or "Owner" role on the subscription
 
-**Issue:** "Billing scope not found"
-- **Solution:** Verify billing scope ID is correct and accessible
+**Issue:** "Subscription not found"
+- **Solution:** Verify subscription_id in JSON file is correct and the subscription exists
 
 **Issue:** "Management group not found"
 - **Solution:** Ensure management group exists before creating subscription

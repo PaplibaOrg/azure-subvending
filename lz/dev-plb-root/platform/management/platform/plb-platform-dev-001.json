@@ -1,15 +1,6 @@
 {
-  "application": "platform",
-  "environment": "dev",
-  "sequence": "001",
-  "management_group": "/providers/Microsoft.Management/managementGroups/dev-plb-platform",
-  "workload": "DevTest",
-  "tags": {
-    "owner": "sunny.bharne",
-    "application": "vending",
-    "costCenter": "platform",
-    "project": "CLZ"
-  }
+  "subscription_name": "plb-platform-dev-001",
+  "management_group": "/providers/Microsoft.Management/managementGroups/dev-plb-platform"
 }
 
 

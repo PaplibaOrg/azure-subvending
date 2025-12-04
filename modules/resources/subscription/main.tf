@@ -1,19 +1,30 @@
-data "azurerm_billing_mca_account_scope" "this" {
-  billing_account_name = var.billing_account_name
-  billing_profile_name = var.billing_profile_name
-  invoice_section_name = var.invoice_section_name
+data "azurerm_subscriptions" "this" {
+  count                 = var.subscription_id == null ? 1 : 0
+  display_name_contains = var.subscription_name
+}
+
+locals {
+  # Find subscription with exact name match
+  found_subscription = var.subscription_id != null ? null : (
+    length(data.azurerm_subscriptions.this) > 0 && length(data.azurerm_subscriptions.this[0].subscriptions) > 0 ?
+    [
+      for sub in data.azurerm_subscriptions.this[0].subscriptions :
+      sub if sub.display_name == var.subscription_name
+    ][0] : null
+  )
+
+  subscription_id = var.subscription_id != null ? var.subscription_id : (
+    local.found_subscription != null ? local.found_subscription.subscription_id : null
+  )
 }
 
 resource "azurerm_subscription" "this" {
+  alias             = var.alias
   subscription_name = var.subscription_name
-  billing_scope_id  = data.azurerm_billing_mca_account_scope.this.id
-  workload          = var.workload
-  tags              = var.tags
+  subscription_id   = local.subscription_id
 }
 
 resource "azurerm_management_group_subscription_association" "this" {
   management_group_id = var.management_group_id
-  subscription_id     = azurerm_subscription.this.id
+  subscription_id     = local.subscription_id
 }
-
-
