@@ -4,11 +4,6 @@ variable "management_group_id" {
 }
 
 variable "subscription_id" {
-  description = "The ID of the existing subscription to create an alias for"
-  type        = string
-}
-
-variable "subscription_name" {
-  description = "The display name of the subscription"
+  description = "The ID of the subscription to move (in /subscriptions/{uuid} format)"
   type        = string
 }

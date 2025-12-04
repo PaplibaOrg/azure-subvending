@@ -7,6 +7,7 @@ locals {
     for file in local.json_files :
     file => jsondecode(file("${path.module}/${file}"))
     if can(jsondecode(file("${path.module}/${file}")).subscription_name) &&
+    can(jsondecode(file("${path.module}/${file}")).subscription_id) &&
     can(jsondecode(file("${path.module}/${file}")).management_group)
   }
 
@@ -18,9 +19,11 @@ locals {
 }
 
 module "subscription" {
-  source              = "../../modules/services/landing-zone"
-  for_each            = local.json_object_map
-  subscription_name   = each.value.subscription_name
-  subscription_id     = lookup(each.value, "subscription_id", null)
+  source = "../../modules/services/landing-zone"
+
+  for_each = local.json_object_map
+
   management_group_id = each.value.management_group
+  subscription_id     = each.value.subscription_id
+  subscription_name   = each.value.subscription_name
 }

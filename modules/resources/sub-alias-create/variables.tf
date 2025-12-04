@@ -1,5 +1,5 @@
-variable "management_group_id" {
-  description = "The management group ID where the subscription should be moved to"
+variable "alias" {
+  description = "The alias name for the subscription"
   type        = string
 }
 

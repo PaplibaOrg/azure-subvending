@@ -46,7 +46,7 @@ stages:
                 echo "ARM_USE_OIDC: $ARM_USE_OIDC"
                 
                 terraform init -upgrade
-                
+
                 terraform plan
 
   # Apply Stage
@@ -95,8 +95,4 @@ stages:
                         terraform plan
                       fi
 
-                      
-                      
                       terraform apply -auto-approve
-
-
