@@ -14,17 +14,20 @@ azure-subvending/
 ├── .instructions/                    # Platform standards and guidelines
 ├── modules/
 │   ├── resources/
-│   │   └── subscription/            # Single subscription resource module
+│   │   ├── sub-alias-create/        # Subscription alias creation module
+│   │   └── sub-move/                 # Subscription management group move module
 │   └── services/
-│       └── subscriptions/            # Subscription orchestration module
+│       └── landing-zone/             # Landing zone orchestration module
 ├── lz/                              # Landing zone deployment files
-│   ├── main.tf                      # Main deployment file
-│   ├── provider.tf                  # Terraform backend and provider config
-│   └── dev-plb-root/
-│       └── landingzones/
-│           └── corp/                # Corporate landing zones
-│               └── <application>/   # Application folders (e.g., platform)
-│                   └── <subscription-name>.json # Subscription configuration (e.g., plb-platform-dev-001.json)
+│   ├── dev-plb-root/                # Dev environment root
+│   │   ├── main.tf                  # Main deployment file
+│   │   ├── provider.tf              # Terraform backend and provider config
+│   │   └── platform/                # Platform subscriptions
+│   │       └── management/
+│   │           └── platform/
+│   │               └── <subscription-name>.json # Subscription configuration
+│   ├── test-plb-root/               # Test environment root
+│   └── plb-root/                    # Production environment root
 ├── pipeline/
 │   ├── deploy-subscriptions.yaml
 │   └── templates/
@@ -39,11 +42,10 @@ azure-subvending/
 
 This repository implements subscription alias management following CAF best practices:
 
-1. **Subscription Management**: Manage existing subscriptions through standardized aliases
-2. **Management Group Placement**: Automatically associate subscriptions with appropriate management groups
-3. **Naming Convention**: Follow consistent naming pattern: `{prefix}-{application}-{environment}-{sequence}`
-4. **Tagging Strategy**: Apply consistent tags for governance and cost management
-5. **Alias Management**: Create and manage subscription aliases for easier identification and management
+1. **Subscription Alias Management**: Create and manage aliases for existing Azure subscriptions
+2. **Management Group Placement**: Automatically move subscriptions to appropriate management groups
+3. **Simplified Configuration**: Minimal configuration required - just subscription name and management group
+4. **Optional Subscription ID**: Subscription ID can be provided or automatically looked up by name
 
 ## Prerequisites
 
@@ -72,24 +74,17 @@ npm install
 
 1. **Create Subscription Configuration Files**
 
-   Create JSON files in `lz/dev-plb-root/landingzones/corp/<application>/` directory, named as `<subscription-name>.json`:
+   Create JSON files in the appropriate directory structure (e.g., `lz/dev-plb-root/platform/management/platform/`), named as `<subscription-name>.json`:
 
    ```json
    {
      "subscription_id": "12345678-1234-1234-1234-123456789012",
-     "application": "platform",
-     "environment": "dev",
-     "sequence": "001",
-     "management_group": "/providers/Microsoft.Management/managementGroups/dev-plb-platform",
-     "workload": "DevTest",
-     "tags": {
-       "owner": "sunny.bharne",
-       "application": "vending",
-       "costCenter": "platform",
-       "project": "CLZ"
-     }
+     "subscription_name": "plb-platform-dev-001",
+     "management_group": "/providers/Microsoft.Management/managementGroups/dev-plb-platform"
    }
    ```
+
+   **Note:** `subscription_id` is optional. If not provided, it will be looked up by `subscription_name`.
 
 2. **Update Terraform Backend**
 
@@ -165,42 +160,49 @@ terraform apply
 
 ## Module Structure
 
-### Resource Module (`modules/resources/subscription/`)
+### Resource Modules
 
-Creates an alias for an existing Azure Subscription and associates it with a management group.
+#### `modules/resources/sub-alias-create/`
+
+Creates an alias for an existing Azure Subscription.
 
 **Variables:**
 - `subscription_name` - Display name of the subscription
-- `subscription_id` - ID of the existing subscription
-- `alias` - Alias name for the subscription
-- `management_group_id` - Management group ID for placement
-- `workload` - Workload type (Production or DevTest)
-- `tags` - Tags to apply
+- `subscription_id` - ID of the existing subscription (optional, will be looked up by name if not provided)
+- `alias` - Alias name for the subscription (typically same as subscription_name)
+
+**Outputs:**
+- `subscription_id` - The ID of the subscription
+- `subscription_name` - The display name of the subscription
+- `subscription_alias` - The alias of the subscription
+
+#### `modules/resources/sub-move/`
+
+Moves a subscription to a management group.
+
+**Variables:**
+- `subscription_id` - ID of the subscription to move (in `/subscriptions/{uuid}` format)
+- `management_group_id` - Management group ID where the subscription should be moved
+
+**Outputs:**
+- `id` - The ID of the management group subscription association
+- `management_group_id` - The management group ID
+- `subscription_id` - The subscription ID
 
 ### Service Module (`modules/services/landing-zone/`)
 
-Orchestrates subscription alias creation with standardized naming and tagging.
+Orchestrates subscription alias creation and management group placement.
 
 **Variables:**
-- `prefix` - Prefix for subscription naming (e.g., 'plb')
-- `application` - Application name/key (must be lowercase)
-- `environment` - Environment name (dev, test, prod)
-- `sequence` - Sequence number for naming (must be 3 characters)
-- `subscription_id` - ID of the existing subscription to create an alias for
+- `subscription_name` - Display name of the subscription
+- `subscription_id` - ID of the existing subscription (optional, will be looked up by name if not provided)
 - `management_group_id` - Management group ID where the subscription should be placed
-- `workload` - The workload type (Production or DevTest)
-- `tags` - Tags map to apply to the subscription
 
 **Outputs:**
-- Subscription ID, name, and alias
-
-## Subscription Naming Convention
-
-Subscriptions follow the pattern: `{prefix}-{application}-{environment}-{sequence}`
-
-**Examples:**
-- `plb-platform-dev-001` - Platform application, Dev environment
-- `plb-app1-prod-001` - App1 application, Prod environment
+- `subscription_id` - The ID of the subscription
+- `subscription_name` - The display name of the subscription
+- `subscription_alias` - The alias of the subscription
+- `sub_move_id` - The ID of the management group subscription association
 
 ## Configuration Files
 
@@ -211,21 +213,17 @@ Each subscription JSON file (named as `<subscription-name>.json`, e.g., `plb-pla
 ```json
 {
   "subscription_id": "12345678-1234-1234-1234-123456789012",
-  "application": "platform",
-  "environment": "dev",
-  "sequence": "001",
-  "management_group": "/providers/Microsoft.Management/managementGroups/dev-plb-platform",
-  "workload": "DevTest",
-  "tags": {
-    "owner": "sunny.bharne",
-    "application": "vending",
-    "costCenter": "platform",
-    "project": "CLZ"
-  }
+  "subscription_name": "plb-platform-dev-001",
+  "management_group": "/providers/Microsoft.Management/managementGroups/dev-plb-platform"
 }
 ```
 
-The `main.tf` automatically reads all JSON files from subdirectories and creates subscriptions for each configuration.
+**Fields:**
+- `subscription_name` (required) - Display name of the subscription
+- `subscription_id` (optional) - ID of the existing subscription. If not provided, will be looked up by `subscription_name`
+- `management_group` (required) - Management group ID where the subscription should be placed
+
+The `main.tf` automatically reads all JSON files from subdirectories and creates aliases for each subscription configuration.
 
 ## Development Workflow
 
@@ -270,15 +268,15 @@ git commit -m "fix"
 - ✅ Service connections secured in Azure DevOps
 - ✅ Least privilege role assignments
 - ✅ State files stored in secure Azure Storage backend
-- ✅ Subscription IDs stored in configuration files (can be updated with real IDs)
+- ✅ Subscription IDs can be stored in configuration files or looked up automatically by name
 
 ## Troubleshooting
 
 **Issue:** "Insufficient permissions to manage subscription"
 - **Solution:** Verify managed identity has "Subscription Contributor" or "Owner" role on the subscription
 
-**Issue:** "Subscription not found"
-- **Solution:** Verify subscription_id in JSON file is correct and the subscription exists
+**Issue:** "Subscription not found" or "Subscription alias not found"
+- **Solution:** Verify subscription_id in JSON file is correct (if provided) or ensure subscription with the specified name exists. Use `terraform import` to import existing aliases into state.
 
 **Issue:** "Management group not found"
 - **Solution:** Ensure management group exists before creating subscription

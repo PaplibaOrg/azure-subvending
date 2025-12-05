@@ -1,6 +1,8 @@
 parameters:
   - name: serviceConnection
     type: string
+  - name: subscriptionId
+    type: string
   - name: environment
     type: string
   - name: workingDirectory
@@ -24,6 +26,9 @@ stages:
               scriptType: 'bash'
               scriptLocation: 'inlineScript'
               inlineScript: |
+                # Set Azure context to the specified subscription
+                az account set --subscription "${{ parameters.subscriptionId }}"
+                
                 cd ${{ parameters.workingDirectory }}
                 
                 # Get Azure context and set ARM variables for Azure provider authentication
@@ -68,6 +73,9 @@ stages:
                     scriptType: 'bash'
                     scriptLocation: 'inlineScript'
                     inlineScript: |
+                      # Set Azure context to the specified subscription
+                      az account set --subscription "${{ parameters.subscriptionId }}"
+                      
                       cd ${{ parameters.workingDirectory }}
                        
                       # Get Azure context and set ARM variables for Azure provider authentication

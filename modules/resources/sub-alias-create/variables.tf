@@ -4,8 +4,9 @@ variable "alias" {
 }
 
 variable "subscription_id" {
-  description = "The ID of the existing subscription to create an alias for"
+  description = "The ID of the existing subscription to create an alias for (optional, will be looked up by name if not provided)"
   type        = string
+  default     = null
 }
 
 variable "subscription_name" {
