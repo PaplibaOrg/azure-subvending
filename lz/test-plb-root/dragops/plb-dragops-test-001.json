@@ -1,0 +1,5 @@
+{
+  "subscription_id": "ea4a2edd-9860-49ae-bf7c-d58e4f1a260d",
+  "subscription_name": "plb-dragops-test-001",
+  "management_group": "/providers/Microsoft.Management/managementGroups/test-corp"
+}
