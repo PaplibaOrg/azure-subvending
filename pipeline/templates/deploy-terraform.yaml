@@ -51,6 +51,8 @@ stages:
                 echo "ARM_USE_OIDC: $ARM_USE_OIDC"
                 
                 terraform init -upgrade
+                # terraform import 'module.subscription["plb-platform-dev-001"].module.subscription.azurerm_subscription.subscription' '/providers/Microsoft.Subscription/aliases/plb-platform-dev-001'
+                # terraform import 'module.subscription["plb-cards-dev-001"].module.subscription.azurerm_subscription.subscription' '/providers/Microsoft.Subscription/aliases/plb-cards-dev-001'
 
                 terraform plan
 

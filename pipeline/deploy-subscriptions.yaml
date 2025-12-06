@@ -13,10 +13,10 @@ pool: default
 variables:
   serviceConnectionDev: 'id-sub-vending-eus-dev-001'
   subscriptionIdDev: '243c3cf8-1a50-4b3c-a45e-0d1f0a82a37b'
-  # serviceConnectionTest: 'id-sub-vending-eus-test-001'
-  # subscriptionIdTest: 'your-test-subscription-id'
-  # serviceConnectionProd: 'id-sub-vending-eus-prod-001'
-  # subscriptionIdProd: 'your-prod-subscription-id'
+  serviceConnectionTest: 'id-sub-vending-eus-test-001'
+  subscriptionIdTest: 'b7762cc9-e968-4152-9cb5-f283738190f4'
+  serviceConnectionProd: 'id-sub-vending-eus-prod-001'
+  subscriptionIdProd: 'ef4541ca-58de-411a-bed5-3127d75ee4a2'
 
 stages:
   # Dev Environment - Plan and Apply
@@ -28,22 +28,20 @@ stages:
       workingDirectory: 'lz/dev-plb-root'
       runPlanInApply: false
 
-  # # Test Environment - Plan, Approval, Apply
-  # - template: templates/deploy-terraform.yaml
-  #   parameters:
-  #     serviceConnection: $(serviceConnectionTest)
-  #     subscriptionId: $(subscriptionIdTest)
-  #     environment: 'Test'
-  #     workingDirectory: 'lz/test-plb-root'
-  #     runPlanInApply: false
+  # Test Environment - Plan, Approval, Apply
+  - template: templates/deploy-terraform.yaml
+    parameters:
+      serviceConnection: $(serviceConnectionTest)
+      subscriptionId: $(subscriptionIdTest)
+      environment: 'Test'
+      workingDirectory: 'lz/test-plb-root'
+      runPlanInApply: false
 
-  # # Prod Environment - Plan, Approval, Apply
-  # - template: templates/deploy-terraform.yaml
-  #   parameters:
-  #     serviceConnection: $(serviceConnectionProd)
-  #     subscriptionId: $(subscriptionIdProd)
-  #     environment: 'Prod'
-  #     workingDirectory: 'lz/plb-root'
-  #     runPlanInApply: false
-
-
+  # Prod Environment - Plan, Approval, Apply
+  - template: templates/deploy-terraform.yaml
+    parameters:
+      serviceConnection: $(serviceConnectionProd)
+      subscriptionId: $(subscriptionIdProd)
+      environment: 'Prod'
+      workingDirectory: 'lz/plb-root'
+      runPlanInApply: false

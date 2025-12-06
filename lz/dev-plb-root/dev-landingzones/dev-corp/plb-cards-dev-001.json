@@ -1,6 +1,6 @@
 {
-  "subscription_id": "243c3cf8-1a50-4b3c-a45e-0d1f0a82a37b",
+  "subscription_id": "e4403c08-7702-43b0-82c7-32b902aa0933",
   "subscription_name": "plb-cards-dev-001",
-  "management_group": "/providers/Microsoft.Management/managementGroups/dev-plb-platform"
+  "management_group": "/providers/Microsoft.Management/managementGroups/dev-corp"
 }
 
