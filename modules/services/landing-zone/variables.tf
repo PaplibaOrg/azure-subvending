@@ -13,3 +13,9 @@ variable "subscription_name" {
   description = "The display name of the subscription"
   type        = string
 }
+
+variable "tags" {
+  description = "A map of tags to assign to the subscription"
+  type        = map(string)
+  default     = {}
+}

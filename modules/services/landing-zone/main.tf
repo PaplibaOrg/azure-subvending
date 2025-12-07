@@ -15,6 +15,7 @@ module "subscription" {
   alias             = var.subscription_name
   subscription_id   = local.subscription_id
   subscription_name = var.subscription_name
+  tags              = var.tags
 }
 
 module "sub_move" {

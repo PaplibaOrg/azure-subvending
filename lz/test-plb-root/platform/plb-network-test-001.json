@@ -1,6 +1,10 @@
 {
   "subscription_id": "f2b64698-ca07-4172-8419-fda1cd7462e6",
   "subscription_name": "plb-network-test-001",
-  "management_group": "/providers/Microsoft.Management/managementGroups/test-connectivity"
+  "management_group": "/providers/Microsoft.Management/managementGroups/test-connectivity",
+  "tags": {
+    "application": "platform",
+    "owner": "sunny.bharne@zohomail.eu"
+  }
 }
 

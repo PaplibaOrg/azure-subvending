@@ -1,6 +1,10 @@
 {
   "subscription_id": "9a7a6275-5b9e-4960-a5ee-ae36407d53fa",
   "subscription_name": "plb-network-prod-001",
-  "management_group": "/providers/Microsoft.Management/managementGroups/connectivity"
+  "management_group": "/providers/Microsoft.Management/managementGroups/connectivity",
+  "tags": {
+    "application": "platform",
+    "owner": "sunny.bharne@zohomail.eu"
+  }
 }
 

@@ -23,4 +23,5 @@ module "subscription" {
   subscription_name   = each.value.subscription_name
   subscription_id     = lookup(each.value, "subscription_id", null)
   management_group_id = each.value.management_group
+  tags                = lookup(each.value, "tags", {})
 }

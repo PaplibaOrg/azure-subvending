@@ -1,5 +1,9 @@
 {
   "subscription_id": "e4403c08-7702-43b0-82c7-32b902aa0933",
   "subscription_name": "plb-dragops-dev-001",
-  "management_group": "/providers/Microsoft.Management/managementGroups/dev-corp"
+  "management_group": "/providers/Microsoft.Management/managementGroups/dev-corp",
+  "tags": {
+    "application": "dragops",
+    "owner": "sunny.bharne@zohomail.eu"
+  }
 }

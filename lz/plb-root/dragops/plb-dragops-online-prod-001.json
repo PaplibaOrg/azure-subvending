@@ -1,6 +1,10 @@
 {
   "subscription_id": "8859c0e9-799b-4433-b8eb-53a0076dee28",
   "subscription_name": "plb-dragops-online-prod-001",
-  "management_group": "/providers/Microsoft.Management/managementGroups/online"
+  "management_group": "/providers/Microsoft.Management/managementGroups/online",
+  "tags": {
+    "application": "dragops",
+    "owner": "sunny.bharne@zohomail.eu"
+  }
 }
 
