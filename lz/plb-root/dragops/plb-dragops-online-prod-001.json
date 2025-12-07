@@ -5,6 +5,12 @@
   "tags": {
     "application": "dragops",
     "owner": "sunny.bharne@zohomail.eu"
+  },
+  "budget": {
+    "enabled": true,
+    "amount": 10,
+    "time_grain": "Quarterly",
+    "contact_emails": ["sunny.bharne@zohomail.eu"]
   }
 }
 

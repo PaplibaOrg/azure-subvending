@@ -8,6 +8,9 @@ locals {
     for sub in data.azurerm_subscriptions.lookup[0].subscriptions : sub.subscription_id
     if sub.display_name == var.subscription_name
   ][0], null)
+
+  # Calculate start date as first day of current month
+  start_date = formatdate("YYYY-MM-01", timestamp())
 }
 
 module "subscription" {
@@ -22,4 +25,26 @@ module "sub_move" {
   source              = "../../resources/sub-move"
   management_group_id = var.management_group_id
   subscription_id     = "/subscriptions/${local.subscription_id}"
+}
+
+module "budget" {
+  count  = var.budget.enabled ? 1 : 0
+  source = "../../resources/sub-budget"
+
+  budget_name     = "${var.subscription_name}-budget"
+  subscription_id = "/subscriptions/${local.subscription_id}"
+  amount          = var.budget.amount
+  time_grain      = var.budget.time_grain
+  start_date      = local.start_date
+  end_date        = "2099-12-31"
+
+  notifications = [
+    {
+      enabled        = true
+      threshold      = 100
+      operator       = "GreaterThanOrEqualTo"
+      threshold_type = "Actual"
+      contact_emails = var.budget.contact_emails
+    }
+  ]
 }

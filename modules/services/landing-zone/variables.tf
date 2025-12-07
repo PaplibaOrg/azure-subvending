@@ -19,3 +19,19 @@ variable "tags" {
   type        = map(string)
   default     = {}
 }
+
+variable "budget" {
+  description = "Budget configuration for the subscription"
+  type = object({
+    enabled        = bool
+    amount         = number
+    time_grain     = string
+    contact_emails = list(string)
+  })
+  default = {
+    enabled        = false
+    amount         = 10
+    time_grain     = "Quarterly"
+    contact_emails = []
+  }
+}

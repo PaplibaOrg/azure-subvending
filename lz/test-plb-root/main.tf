@@ -24,4 +24,5 @@ module "subscription" {
   subscription_id     = lookup(each.value, "subscription_id", null)
   management_group_id = each.value.management_group
   tags                = lookup(each.value, "tags", {})
+  budget              = lookup(each.value, "budget", { enabled = false, amount = 10, time_grain = "Quarterly", contact_emails = [] })
 }
