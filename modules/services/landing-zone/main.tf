@@ -9,8 +9,8 @@ locals {
     if sub.display_name == var.subscription_name
   ][0], null)
 
-  # Calculate start date as first day of current month
-  start_date = formatdate("YYYY-MM-01", timestamp())
+  # Calculate start date as first day of current month in RFC3339 format
+  start_date = "${formatdate("YYYY-MM-01", timestamp())}T00:00:00Z"
 }
 
 module "subscription" {
@@ -36,7 +36,7 @@ module "budget" {
   amount          = var.budget.amount
   time_grain      = var.budget.time_grain
   start_date      = local.start_date
-  end_date        = "2099-12-31"
+  end_date        = "2099-12-31T23:59:59Z"
 
   notifications = [
     {
