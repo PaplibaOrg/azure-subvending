@@ -48,3 +48,11 @@ module "budget" {
     }
   ]
 }
+
+module "resource_groups" {
+  source                       = "../../resources/resource-groups"
+  subscription_name            = var.subscription_name
+  location                     = var.location
+  tags                         = var.tags
+  create_platform_resources_rg = false
+}

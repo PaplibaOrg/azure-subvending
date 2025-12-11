@@ -35,3 +35,9 @@ variable "budget" {
     contact_emails = []
   }
 }
+
+variable "location" {
+  description = "The Azure region where resources will be created"
+  type        = string
+  default     = "East US"
+}
