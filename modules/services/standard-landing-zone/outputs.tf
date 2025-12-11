@@ -20,10 +20,10 @@ output "management_group_id" {
 
 output "mi_resource_group_name" {
   description = "The name of the Managed Identity resource group"
-  value       = module.resource_groups.mi_resource_group_name
+  value       = module.resource_group_mi.name
 }
 
 output "tfstate_resource_group_name" {
   description = "The name of the Terraform state resource group"
-  value       = module.resource_groups.tfstate_resource_group_name
+  value       = module.resource_group_tfstate.name
 }

@@ -49,10 +49,16 @@ module "budget" {
   ]
 }
 
-module "resource_groups" {
-  source                       = "../../resources/resource-groups"
-  subscription_name            = var.subscription_name
-  location                     = var.location
-  tags                         = var.tags
-  create_platform_resources_rg = false
+module "resource_group_mi" {
+  source   = "../../resources/resource-groups"
+  name     = "rg-${var.subscription_name}-mi"
+  location = var.location
+  tags     = var.tags
+}
+
+module "resource_group_tfstate" {
+  source   = "../../resources/resource-groups"
+  name     = "rg-${var.subscription_name}-tfstate"
+  location = var.location
+  tags     = var.tags
 }
